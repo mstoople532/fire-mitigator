@@ -2,6 +2,7 @@ import React from 'react'
 import { View, Text, ListView, Switch, TextInput } from 'react-native'
 import { connect } from 'react-redux'
 import ScrollableTabView from 'react-native-scrollable-tab-view'
+import MapviewExample from "./MapviewExample"
 import PropertyTab from "../Components/PropertyTab"
 import PropertyStructureTab from "../Components/PropertyStructureTab"
 // For empty lists
@@ -284,8 +285,6 @@ class DSAChecklistPro extends React.Component {
   }
   render () {
     const propertyData = this.state.propertyData
-     console.log('state', this.state)
-     console.log('props', this.props)
 
     return (
       <View style={styles.container}>
@@ -295,6 +294,8 @@ class DSAChecklistPro extends React.Component {
           >
           <PropertyTab {...this.state} tabLabel={"Property Info"} />
           <PropertyStructureTab {...this.state} tabLabel={"Structure Info"} />
+          <MapviewExample {...this.state} tabLabel={"Map"} />
+          
         </ScrollableTabView >
         
       </View>

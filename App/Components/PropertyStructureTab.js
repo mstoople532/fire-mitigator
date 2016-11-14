@@ -1,5 +1,5 @@
 import React, {PropTypes} from 'react'
-import { View, Text, ListView, Switch, TextInput, Picker } from 'react-native'
+import { View, Text, ListView, Switch, TextInput, Picker, ScrollView } from 'react-native'
 import { connect } from 'react-redux'
 import ScrollableTabView from 'react-native-scrollable-tab-view'
 import PropertyActions from '../Redux/PropertyRedux'
@@ -267,17 +267,22 @@ class PropertyStructureTab extends React.Component {
       {key: 'screen', handlePicker: this._handleScreenPicker},
       {key: 'garage', handlePicker: this._handleGaragePicker},
       {key: 'deck', handlePicker: this._handleDeckPicker},
+      {key: 'deck', handlePicker: this._handleDeckPicker},
+      {key: 'deck', handlePicker: this._handleDeckPicker},
+      {key: 'deck', handlePicker: this._handleDeckPicker},
       ]
     return(
-    <View >
-    {dataPoints.map((dataPoint)=>{
-                  console.log('dataPoint',dataPoint)
+      <ScrollView>
 
-      return(
-        this.renderPicker(dataPoint.key, this.props[dataPoint.key], this.state[dataPoint.key], dataPoint.handlePicker)
-      )
-    })}
-    </View>
+        {dataPoints.map((dataPoint)=>{
+                      console.log('dataPoint',dataPoint)
+
+          return(
+            this.renderPicker(dataPoint.key, this.props[dataPoint.key], this.state[dataPoint.key], dataPoint.handlePicker)
+          )
+        })}
+      </ScrollView>
+
     )
   }
 }
@@ -311,7 +316,7 @@ const mapDispatchToProps = (dispatch) => {
     changeSkylight: (skylight) => dispatch(PropertyActions.changeSkylight(skylight)),
     changeWindow: (window) => dispatch(PropertyActions.changeWindow(window)),
     changeScreen: (screen) => dispatch(PropertyActions.changeScreen(screen)),
-}
+  }
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(PropertyStructureTab)

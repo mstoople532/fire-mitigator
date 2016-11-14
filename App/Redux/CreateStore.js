@@ -7,6 +7,7 @@ import R from 'ramda'
 import RehydrationServices from '../Services/RehydrationServices'
 import ReduxPersist from '../Config/ReduxPersist'
 import { StartupTypes } from './StartupRedux'
+  import devToolsEnhancer from 'remote-redux-devtools';
 
 // creates the store
 export default (rootReducer, rootSaga) => {

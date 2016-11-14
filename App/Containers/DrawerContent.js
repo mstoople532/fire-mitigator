@@ -55,6 +55,10 @@ class DrawerContent extends Component {
     this.toggleDrawer()
     NavigationActions.dsaPro()
   }
+  handlePressProperties = () => {
+    this.toggleDrawer()
+    NavigationActions.properties()
+  }
 
   render () {
     return (
@@ -67,6 +71,7 @@ class DrawerContent extends Component {
         <DrawerButton text='Device Info' onPress={this.handlePressDevice} />
         <DrawerButton text='Map' onPress={this.handlePressMap} />
         <DrawerButton text='DSA Checklist Professional' onPress={this.handlePressDSAPro} />
+        <DrawerButton text='Property List' onPress={this.handlePressProperties} />
       </ScrollView>
     )
   }

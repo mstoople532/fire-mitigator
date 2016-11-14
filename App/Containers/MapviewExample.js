@@ -5,6 +5,10 @@ import MapView from 'react-native-maps'
 import { calculateRegion } from '../Lib/MapHelpers'
 import MapCallout from '../Components/MapCallout'
 import Styles from './Styles/MapviewExampleStyle'
+import PropertyActions from '../Redux/PropertyRedux'
+import PropertiesActions from '../Redux/PropertiesRedux'
+import RoundedButton from '../Components/RoundedButton'
+import { Actions as NavigationActions } from 'react-native-router-flux'
 
 /* ***********************************************************
 * IMPORTANT!!! Before you get started, if you are going to support Android,
@@ -27,44 +31,46 @@ class MapviewExample extends React.Component {
     super(props)
     /* ***********************************************************
     * STEP 1
-    * Set the array of locations to be displayed on your map. You'll need to define at least
+    * Set the array of markers to be displayed on your map. You'll need to define at least
     * a latitude and longitude as well as any additional information you wish to display.
     *************************************************************/
-    const locations = [
-      { title: 'Location A', latitude: 37.78825, longitude: -122.4324 },
-      { title: 'Location B', latitude: 37.75825, longitude: -122.4624 }
+    const markers = [
+      { title: 'marker A', latitude: 37.78825, longitude: -122.4324 },
+      { title: 'marker B', latitude: 37.75825, longitude: -122.4624 }
     ]
     /* ***********************************************************
     * STEP 2
-    * Set your initial region either by dynamically calculating from a list of locations (as below)
+    * Set your initial region either by dynamically calculating from a list of markers (as below)
     * or as a fixed point, eg: { latitude: 123, longitude: 123, latitudeDelta: 0.1, longitudeDelta: 0.1}
     *************************************************************/
-    const region = calculateRegion(locations, { latPadding: 0.05, longPadding: 0.05 })
+    const region = calculateRegion(markers, { latPadding: 0.05, longPadding: 0.05 })
     this.state = {
       region,
-      locations,
-      showUserLocation: true
+      markers,
+      showUsermarker: true
     }
     this.renderMapMarkers = this.renderMapMarkers.bind(this)
     this.onRegionChange = this.onRegionChange.bind(this)
     this.handleAddMarker = this.handleAddMarker.bind(this)
+    this.handleDragMarker = this.handleDragMarker.bind(this)
+    this.handleAddPropertyButton = this.handleAddPropertyButton.bind(this)
   }
 
   componentWillReceiveProps (newProps) {
     /* ***********************************************************
     * STEP 3
-    * If you wish to recenter the map on new locations any time the
+    * If you wish to recenter the map on new markers any time the
     * Redux props change, do something like this:
     *************************************************************/
     // this.setState({
-    //   region: calculateRegion(newProps.locations, { latPadding: 0.1, longPadding: 0.1 })
+    //   region: calculateRegion(newProps.markers, { latPadding: 0.1, longPadding: 0.1 })
     // })
   }
 
   onRegionChange (newRegion) {
     /* ***********************************************************
     * STEP 4
-    * If you wish to fetch new locations when the user changes the
+    * If you wish to fetch new markers when the user changes the
     * currently visible region, do something like this:
     *************************************************************/
     // const searchRegion = {
@@ -76,60 +82,68 @@ class MapviewExample extends React.Component {
     // Fetch new data...
   }
 
-  calloutPress (location) {
+  calloutPress (marker) {
     /* ***********************************************************
     * STEP 5
     * Configure what will happen (if anything) when the user
     * presses your callout.
     *************************************************************/
-    console.tron.log(location)
-    console.log(location)
+    console.tron.log(marker)
+    console.log(marker)
   }
-  
+
+  handleAddPropertyButton(){
+    const item = this.props.property
+    this.props.addProperty(item)
+    NavigationActions.properties()
+  }
+
   handleAddMarker (e) {
     /* ************************************************************
     * New Marker
-    * Pressing Map Will add new Marker to screen at that location
+    * Pressing Map Will add new Marker to screen at that marker
     * presses your callout.
     *************************************************************/
-    console.log('hi', e.nativeEvent.coordinate)
     const location = e.nativeEvent
-    let locations = this.state.locations
-    locations.push({
-      title: 'Marker '+ locations.length,
+    const markers = this.props.markers
+    
+    const marker = {
+      title: 'Marker '+ markers.length,
       latitude: location.coordinate.latitude,
       longitude: location.coordinate.longitude
-    })
-    this.setState({locations})
+    }
+    console.log('addMarker Marker', marker)
+
+    this.props.addMarker(marker)
+
+  }
+  handleDragMarker (e, index) {
+    console.log('index', index)
+    this.props.moveMarker({coordinate: e.nativeEvent.coordinate, index: index})
+        // this.props.baddMarker(e.nativeEvent)
 
   }
 
-  renderMapMarkers (location, index) {
+  renderMapMarkers (marker, index) {
     /* ***********************************************************
     * STEP 6
-    * Customize the appearance and location of the map marker.
+    * Customize the appearance and marker of the map marker.
     * Customize the callout in ../Components/MapCallout.js
     *************************************************************/
-    let locations = this.state.locations
+    let markers = this.props.markers
     return (
       <MapView.Marker draggable
-        key={location.title} 
-        coordinate={{latitude: location.latitude, longitude: location.longitude}}
-                onDragEnd={(e) => {
-                  locations[index].latitude = e.nativeEvent.coordinate.latitude; 
-                  locations[index].longitude = e.nativeEvent.coordinate.longitude; 
-                  this.setState({ locations },  console.log(e.nativeEvent.coordinate))}
-                } // this.setState({ location: e.nativeEvent.coordinate
-       // onDragEnd={(e) => console.log(e.nativeEvent.coordinate)} // this.setState({ location: e.nativeEvent.coordinate
-
+        key={marker.title} 
+        coordinate={{latitude: marker.latitude, longitude: marker.longitude}}
+        onDragEnd={(e)=>this.handleDragMarker(e, index)}
         >
-        <MapCallout location={location} onPress={this.calloutPress} />
+        <MapCallout marker={marker} onPress={this.calloutPress} />
       </MapView.Marker>
     )
   }
 
   render () {
-    console.log('hey')
+    console.log('markers props', this.props.markers)
     return (
       <View style={Styles.container}>
         <Text>Hey</Text>
@@ -137,19 +151,31 @@ class MapviewExample extends React.Component {
           style={Styles.map}
           initialRegion={this.state.region}
           onRegionChangeComplete={this.onRegionChange}
-          showsUserLocation={this.state.showUserLocation}
+          showsUsermarker={this.state.showUsermarker}
           onPress={this.handleAddMarker}
         >
-          {this.state.locations.map((location, index) => this.renderMapMarkers(location, index))}
+          {this.props.markers.map((marker, index) => this.renderMapMarkers(marker, index) )}
         </MapView>
+        <RoundedButton text={'Add Property'} onPress={this.handleAddPropertyButton}/>
+
       </View>
     )
   }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
+    markers: state.property.markers,
+    property: state.property,
   }
 }
 
-export default connect(mapStateToProps)(MapviewExample)
+const mapDispatchToProps = (dispatch) => {
+  return {
+    addMarker: (marker) => dispatch(PropertyActions.addMarker(marker)),
+    moveMarker: (markerMove) => dispatch(PropertyActions.moveMarker(markerMove)),
+    addProperty: (property) => dispatch(PropertiesActions.addProperty(property)),
+  }
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(MapviewExample)

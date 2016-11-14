@@ -1,9 +1,13 @@
 import { createReducer, createActions } from 'reduxsauce'
 import Immutable from 'seamless-immutable'
-
+import update from 'react-addons-update'
 /* ------------- Types and Action Creators ------------- */
 
 const { Types, Creators } = createActions({
+  newProperty: ['property'],
+  loadProperty: ['property'],
+  addMarker: ['marker'],
+  moveMarker: ['markerMove'],
   changeAddress: ['address'],
   changeDayAssessed: ['dayAssessed'],
   changeOwner: ['owner'],
@@ -24,6 +28,7 @@ export default Creators
 /* ------------- Initial State ------------- */
 
 export const INITIAL_STATE = Immutable({
+    propertyId: '',
     address: '',
     dayAssessed: '',
     owner: '',
@@ -36,10 +41,47 @@ export const INITIAL_STATE = Immutable({
     skylight: '',
     window: '',
     screen: '',
+    markers: [
+      { title: 'marker A', latitude: 37.78825, longitude: -122.4324 },
+      { title: 'marker B', latitude: 37.75825, longitude: -122.4624 }
+    ]
   })
 
 
 /* ------------- Reducers ------------- */
+export const loadProperty = (state, {property}) => {
+    console.log('loadProperty, property', property)
+    return property
+}
+
+export const newProperty = () => {
+    return INITIAL_STATE
+}
+export const addMarker = (state, {marker}) => {
+    console.log('AddMarker, redux', marker)
+    const markers = state.markers.concat(marker)
+    
+    return state.merge({ markers });
+}
+
+export const moveMarker =(state, {markerMove}) => {
+
+  const index =  markerMove.index 
+
+  const movedMarker = {
+    title: state.markers[index].title,
+    latitude: markerMove.coordinate.latitude,
+    longitude: markerMove.coordinate.longitude
+  }
+
+  const markers = [
+    ...state.markers.slice(0,index), 
+    movedMarker, 
+    ...state.markers.slice(index+1)
+  ]
+
+  return state.merge({ markers })
+}
 
 // change the temperature for a city
 export const changeAddress = (state, {address}) => 
@@ -93,6 +135,10 @@ export const changeScreen = (state, {screen}) =>
 /* ------------- Hookup Reducers To Types ------------- */
 
 export const reducer = createReducer(INITIAL_STATE, {
+  [Types.NEW_PROPERTY]: newProperty,
+  [Types.LOAD_PROPERTY]: loadProperty,
+  [Types.ADD_MARKER]: addMarker,
+  [Types.MOVE_MARKER]: moveMarker,
   [Types.CHANGE_ADDRESS]: changeAddress,
   [Types.CHANGE_DAYS_ASSESSED]: changeDayAssessed,
   [Types.CHANGE_OWNER]: changeOwner,

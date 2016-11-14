@@ -5,8 +5,8 @@ import rootSaga from '../Sagas/'
 export default () => {
   /* ------------- Assemble The Reducers ------------- */
   const rootReducer = combineReducers({
-        property: require('./PropertyRedux').reducer,
-
+    property: require('./PropertyRedux').reducer,
+    properties: require('./PropertiesRedux').reducer,
     temperature: require('./TemperatureRedux').reducer,
     login: require('./LoginRedux').reducer,
     // assesments: require('./AssessmentsRedux').reducer,

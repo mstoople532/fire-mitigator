@@ -60,6 +60,8 @@
     "reactotron-apisauce": "^1.1.2",
     "reactotron-react-native": "^1.1.2",
     "reactotron-redux": "^1.1.2",
+    "remote-redux-devtools": "^0.5.3",
+    "remote-redux-devtools-on-debugger": "^0.7.0",
     "snazzy": "^5.0.0",
     "standard": "^8.0.0"
   },

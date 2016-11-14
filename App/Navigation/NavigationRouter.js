@@ -18,6 +18,7 @@ import APITestingScreen from '../Containers/APITestingScreen'
 import ThemeScreen from '../Containers/ThemeScreen'
 import DeviceInfoScreen from '../Containers/DeviceInfoScreen'
 import DSAChecklistPro from '../Containers/DSAChecklistPro'
+import Properties from '../Containers/Properties'
 /* **************************
 * Documentation: https://github.com/aksonov/react-native-router-flux
 ***************************/
@@ -40,6 +41,7 @@ class NavigationRouter extends Component {
             <Scene key='deviceInfo' component={DeviceInfoScreen} title='Device Info' />
             <Scene key='map' component={MapviewExample} title='Map View' />
             <Scene key='dsaPro' component={DSAChecklistPro} title='DSA Checklist Professional' />
+            <Scene key='properties' component={Properties} title='Properties' />
           </Scene>
         </Scene>
       </Router>

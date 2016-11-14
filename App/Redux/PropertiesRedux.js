@@ -5,25 +5,36 @@ import PropertyActions from '../Redux/PropertyRedux'
 /* ------------- Types and Action Creators ------------- */
 
 const { Types, Creators } = createActions({
-  addProperty: ['properties'],
+  addProperty: ['property'],
+  setProperty: ['property'],
 })
 
-export const PropertyTypes = Types
+export const PropertiesTypes = Types
 export default Creators
 
 /* ------------- Initial State ------------- */
 
-export const INITIAL_STATE = Immutable(
-  []
-)
+export const INITIAL_STATE = Immutable([ 
+])
 
 /* ------------- Reducers ------------- */
 export const addProperty = (state, {property}) => {
-    let newProperty = property.slice();
-    newProperty.splice(property.index, 0, property.item);
-    return newProperty;
+  if (property.propertyId === '') {
+      const propertyId = state.length
+      return state.concat(property.merge({propertyId}))
+  }
+  return [
+        ...state.slice(0,property.propertyId), 
+        property, 
+        ...state.slice(property.propertyId+1)
+      ]
+  
 }
 
+export const setProperty = (state, {property}) => {
+  PropertyActions.loadProperty(property)
+  return state
+}
   
 
 // successful temperature lookup
@@ -39,6 +50,6 @@ export const addProperty = (state, {property}) => {
 /* ------------- Hookup Reducers To Types ------------- */
 
 export const reducer = createReducer(INITIAL_STATE, {
-  [Types.A]: addProperty,
-
+  [Types.ADD_PROPERTY]: addProperty,
+  [Types.SET_PROPERTY]: setProperty,
 })

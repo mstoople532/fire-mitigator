@@ -6,7 +6,7 @@ import Styles from './Styles/MapCalloutStyle'
 export default class MapCallout extends React.Component {
   constructor (props) {
     super(props)
-    this.onPress = this.props.onPress.bind(this, this.props.location)
+    this.onPress = this.props.onPress.bind(this, this.props.marker)
   }
 
   render () {
@@ -14,11 +14,11 @@ export default class MapCallout extends React.Component {
     * Customize the appearance of the callout that opens when the user interacts with a marker.
     * Note: if you don't want your callout surrounded by the default tooltip, pass `tooltip={true}` to `MapView.Callout`
     *************************************************************/
-    const { location } = this.props
+    const { marker } = this.props
     return (
       <MapView.Callout style={Styles.callout}>
         <TouchableOpacity onPress={this.onPress}>
-          <Text>{location.title}</Text>
+          <Text>{marker.title}</Text>
         </TouchableOpacity>
       </MapView.Callout>
     )
@@ -26,6 +26,6 @@ export default class MapCallout extends React.Component {
 }
 
 MapCallout.propTypes = {
-  location: PropTypes.object.isRequired,
+  marker: PropTypes.object.isRequired,
   onPress: PropTypes.func
 }
